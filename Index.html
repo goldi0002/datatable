@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CSV Export Example</title>
+  <script src="excelScript.js"></script>
+</head>
+<body>
+  <button id="exportButton">Export CSV</button>
+  <script>
+    document.getElementById('exportButton').addEventListener('click', () => {
+        try {
+            const data = [
+  { Name: 'Alice', Age: 30.5, Amount: 1000 },
+  { Name: 'Bob', Age: 25, Amount: 1500.75 },
+];
+
+const headers = ['Name', 'Age', 'Amount'];
+  const options = {
+    title: 'User Data',
+    includeHeaders:false,
+    customFilename: 'MyExport',
+//   delimiter: ';', // Customize delimiter (semicolon)
+  decimalSeparator: ',', // Customize decimal separator (comma)
+  thousandsSeparator: '.', // Customize thousands separator (dot)
+  amountSymbol:"$",
+    // ... other options
+  };
+
+  exportToExcel('Sheet1dsds', headers, data, options);
+} catch (error) {
+  console.error('Export failed:', error);
+}
+});
+  </script>
+</body>
+</html>
