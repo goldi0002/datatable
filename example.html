@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Drag and Drop Rows</title>
+    <style>
+        .table-container {
+            margin: 2em;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        th, td {
+            border: 1px solid #ccc;
+            padding: 8px;
+            text-align: left;
+        }
+        .dragged-row {
+            background-color: #f5f5f5;
+            opacity: 0.6;
+        }
+        .drop-target-row {
+            background-color: #e0e0e0;
+        }
+        .reset-button {
+            margin-top: 1em;
+        }
+    </style>
+</head>
+<body>
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr id="row1">
+                    <td>1</td>
+                    <td>John Doe</td>
+                    <td>john@example.com</td>
+                    <td>123-456-7890</td>
+                </tr>
+                <tr id="row2">
+                    <td>2</td>
+                    <td>Jane Smith</td>
+                    <td>jane@example.com</td>
+                    <td>987-654-3210</td>
+                </tr>
+                <!-- Add more rows here -->
+            </tbody>
+        </table>
+        <button class="reset-button">Reset Order</button>
+    </div>
+
+    <script>
+        function enableDragAndDrop() {
+            var rows = document.querySelectorAll('tbody tr');
+            var resetButton = document.querySelector('.reset-button');
+
+            rows.forEach(function(row) {
+                row.draggable = true;
+
+                row.addEventListener('dragstart', function(e) {
+                    e.dataTransfer.setData('text/plain', row.id);
+                    row.classList.add('dragged-row');
+                });
+
+                row.addEventListener('dragend', function() {
+                    row.classList.remove('dragged-row');
+                });
+
+                row.addEventListener('dragover', function(e) {
+                    e.preventDefault();
+                    row.classList.add('drop-target-row');
+                });
+
+                row.addEventListener('dragleave', function() {
+                    row.classList.remove('drop-target-row');
+                });
+
+                row.addEventListener('drop', function(e) {
+                    e.preventDefault();
+                    var draggedRowId = e.dataTransfer.getData('text/plain');
+                    var draggedRow = document.getElementById(draggedRowId);
+
+                    if (draggedRow && draggedRow !== row) {
+                        var tbody = row.parentNode;
+                        var newRow = row.nextSibling === draggedRow ? row : row.nextSibling;
+                        tbody.insertBefore(draggedRow, newRow);
+                        row.classList.remove('drop-target-row');
+                    }
+                });
+            });
+
+            resetButton.addEventListener('click', function() {
+                var tbody = document.querySelector('tbody');
+                Array.from(rows).forEach(function(row, index) {
+                    tbody.appendChild(row);
+                });
+            });
+        }
+
+        // Call the function to enable drag-and-drop after the page is loaded
+        window.addEventListener('load', function() {
+            enableDragAndDrop();
+        });
+    </script>
+</body>
+</html>

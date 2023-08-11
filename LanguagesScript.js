@@ -1,0 +1,106 @@
+var languages = [{
+  code: 'en',
+  name: 'English'
+}, {
+  code: 'fr',
+  name: 'French'
+}, {
+  code: 'es',
+  name: 'Spanish'
+}, {
+  code: 'de',
+  name: 'German'
+}, {
+  code: 'it',
+  name: 'Italian'
+}, {
+  code: 'pt',
+  name: 'Portuguese'
+}, {
+  code: 'nl',
+  name: 'Dutch'
+}, {
+  code: 'ru',
+  name: 'Russian'
+}, {
+  code: 'zh',
+  name: 'Chinese'
+}, {
+  code: 'ja',
+  name: 'Japanese'
+}, {
+  code: 'ko',
+  name: 'Korean'
+}, {
+  code: 'ar',
+  name: 'Arabic'
+}, {
+  code: 'hi',
+  name: 'Hindi'
+}, {
+  code: 'bn',
+  name: 'Bengali'
+}, {
+  code: 'ur',
+  name: 'Urdu'
+}, {
+  code: 'fa',
+  name: 'Persian'
+}, {
+  code: 'tr',
+  name: 'Turkish'
+}, {
+  code: 'vi',
+  name: 'Vietnamese'
+}, {
+  code: 'th',
+  name: 'Thai'
+}, {
+  code: 'id',
+  name: 'Indonesian'
+}, {
+  code: 'ms',
+  name: 'Malay'
+}, {
+  code: 'pl',
+  name: 'Polish'
+}, {
+  code: 'uk',
+  name: 'Ukrainian'
+}, {
+  code: 'cs',
+  name: 'Czech'
+}, {
+  code: 'sv',
+  name: 'Swedish'
+}, {
+  code: 'da',
+  name: 'Danish'
+}, {
+  code: 'fi',
+  name: 'Finnish'
+}, {
+  code: 'no',
+  name: 'Norwegian'
+}, {
+  code: 'he',
+  name: 'Hebrew'
+}, {
+  code: 'el',
+  name: 'Greek'
+}, {
+  code: 'ro',
+  name: 'Romanian'
+}, {
+  code: 'hu',
+  name: 'Hungarian'
+}, {
+  code: 'sk',
+  name: 'Slovak'
+}, {
+  code: 'bg',
+  name: 'Bulgarian'
+}, {
+  code: 'hr',
+  name: 'Croatian'
+}];

@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>CSV Export Example</title>
+  <!-- <script src="https://cdn.jsdelivr.net/gh/goldi0002/CsvExport@main/csvExport.js"></script> -->
   <script src="excelScript.js"></script>
 </head>
 <body>
@@ -19,12 +20,15 @@
 const headers = ['Name', 'Age', 'Amount'];
   const options = {
     title: 'User Data',
-    includeHeaders:false,
+    includeHeaders:true,
     customFilename: 'MyExport',
 //   delimiter: ';', // Customize delimiter (semicolon)
   decimalSeparator: ',', // Customize decimal separator (comma)
   thousandsSeparator: '.', // Customize thousands separator (dot)
-  amountSymbol:"$",
+  amountSymbol: {
+    amountField: 'Age',
+    symbol: '$', // Specify the currency symbol
+  },
     // ... other options
   };
 
