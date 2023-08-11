@@ -32,7 +32,7 @@ th {
     text-align: center;
 }
 button {
-    background-color: blueviolet;
+    background-color: btn btn-primary;
     color: black;
 }
 .filter-icon {
@@ -59,11 +59,11 @@ button {
     padding: 10px;
     box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
 }
-span {
-    background-color: blueviolet;
-    color: fefefe;
-    padding-top: 3px;
-}
+// span {
+//     background-color: blueviolet;
+//     color: fefefe;
+//     padding-top: 3px;
+// }
 .showing-entry-text {
   font-size: 14px;
   color: fefefe;
