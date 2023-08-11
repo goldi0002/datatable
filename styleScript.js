@@ -66,7 +66,7 @@ span {
 }
 .showing-entry-text {
   font-size: 14px;
-  color: black;
+  color: fefefe;
   float: right;
   margin-top: 10px;
 }
