@@ -61,12 +61,12 @@ button {
 }
 span {
     background-color: blueviolet;
-    color: black;
+    color: fefefe;
     padding-top: 3px;
 }
 .showing-entry-text {
   font-size: 14px;
-  color: black;
+  color: fefefe;
   float: right;
   margin-top: 10px;
 }
