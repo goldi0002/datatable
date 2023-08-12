@@ -17,6 +17,7 @@ GTable.attachTable = function(tableSelector, options = {}) {
 				customPageZise = false,
 				headerFilter = false,
 				rowFont=true,
+				destroy=true,
 				dragAnd_DropRow=true,
 				goto_page={
 					on:true,
@@ -117,6 +118,9 @@ GTable.attachTable = function(tableSelector, options = {}) {
 		if (!Array.isArray(_data) || _data.length === 0) {
 			throw new Error("Invalid data!");
 		}
+		if(destroy){
+			destroyTable(tableSelector)
+		}
 		addPaginationContainer(tableSelector);
 		if (sorting) {
 			addSortableColumns(table, shortSpec, columns, sortDirection, currentPage, pageSize, _data, tableSelector, showingentry);
@@ -183,6 +187,19 @@ GTable.attachTable = function(tableSelector, options = {}) {
 		console.log(error + " occurred");
 	}
 };
+function destroyTable(tableSelector) {
+    var table = document.querySelector(tableSelector);
+    if (table) {
+        // Remove event listeners and other resources
+        var tbody = table.querySelector('tbody');
+        if (tbody) {
+            tbody.innerHTML = ''; // Clear the table body
+        }
+        table.innerHTML = ''; // Clear the entire table
+    } else {
+        console.warn('Table not found.');
+    }
+}
 function importCSVFile(){
 	var impBtn = document.createElement("div");
 	impBtn.classList.add("import-buttons");
@@ -285,7 +302,6 @@ function showContextMenu(x, y,contextMenu) {
   contextMenu.style.display = 'block';
 }
 function contextMenu_workProgrss(edit,_del,_cpR,_cpWh,Pn_row,exportJson,selectedLanguage) {
-	debugger;
  var contextMenu = document.createElement('ul');
   var editItem='';
   var deleteItem='';
@@ -419,15 +435,12 @@ function findRows_addClass(dragAnd_DropRow,tableSelector){
 }
 function enableDragAndDrop(tableSelector) {
 	var table = document.getElementById(tableSelector.substring(1)); // Remove '#' from the selector
-   debugger;
 	if (!table) {
 		console.error('Table element not found.');
 		return;
 	}
-	debugger;
 	table.addEventListener('dragstart', function(e) {
 	  if (e.target.tagName === 'TR') {
-		debugger;
 		e.dataTransfer.setData('text/plain', ''); // Required for Firefox
 		e.target.classList.add('dragged-row');
 		e.dataTransfer.effectAllowed = 'move';
@@ -978,7 +991,6 @@ function updateTable(tableSelector, _data, _columns, currentPage, pageSize, grou
   }
   var groupedData = groupData(dataToShow, groupByColumns || []);
 function renderGroupRow(groupKeys) {
-	debugger;
 	if(groupKeys.length>0){
 		var groupRow = document.createElement('tr');
 		var groupCell = document.createElement('td');
