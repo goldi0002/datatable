@@ -723,7 +723,7 @@ function addGlobalSearch(tableSelector, columns, _data, defaultPageSize, showing
 		var pSelectElement = document.getElementById('pselect');
 		if (pSelectElement) {
 			var pagingOptions = document.getElementById("pagingOptions");
-			pagingOptions.classList.add("hide");
+			// pagingOptions.classList.add("hide");
 			pSelectElement.parentNode.insertBefore(searchInput, pSelectElement.nextSibling);
 		} else {
 			console.warn("paging not found add paging")
