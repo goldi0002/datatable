@@ -100,6 +100,9 @@ GTable.attachTable = function(tableSelector, options = {}) {
 			console.error("Table not found:", tableSelector);
 			return;
 		}
+		if(destroy){
+			destroyTable(tableSelector)
+		}
 		if (languageNoDataAvailabemsg.enable) {
 			EnableLocalisation(languageNoDataAvailabemsg.container_id,noDataAvailabe.textStyle,tableSelector,columns,languageNoDataAvailabemsg.lang_code)
 		}
@@ -117,9 +120,6 @@ GTable.attachTable = function(tableSelector, options = {}) {
 		}
 		if (!Array.isArray(_data) || _data.length === 0) {
 			throw new Error("Invalid data!");
-		}
-		if(destroy){
-			destroyTable(tableSelector)
 		}
 		addPaginationContainer(tableSelector);
 		if (sorting) {
