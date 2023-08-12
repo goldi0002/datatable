@@ -195,7 +195,22 @@ function destroyTable(tableSelector) {
         if (tbody) {
             tbody.innerHTML = ''; // Clear the table body
         }
-        // table.innerHTML = ''; // Clear the entire table
+		var paginationa_Option=document.querySelector("pagingOptions");
+		if(paginationa_Option){
+			paginationa_Option.innerHTML='';
+		}
+		var psgination=document.querySelector("pagination");
+		if(psgination){
+			psgination.innerHTML='';
+		}
+		var shoring_entery_test=document.querySelector("showing-entry-text");
+		if(shoring_entery_test){
+			shoring_entery_test.innerHTML='';
+		}
+		var totalRecordsCount=document.querySelector("total-records-count");
+		if(totalRecordsCount){
+		  totalRecordsCount.innerHTML='';
+		}
     } else {
         console.warn('Table not found.');
     }
