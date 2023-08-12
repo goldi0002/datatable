@@ -4,6 +4,7 @@ GTable.attachTable = function(tableSelector, options = {}) {
 	try {
 		var {
 			    sorting = true,
+				destroy=true,
 				sortDirection = 'desc',
 				columns = [],
 				_data = [],
@@ -17,7 +18,6 @@ GTable.attachTable = function(tableSelector, options = {}) {
 				customPageZise = false,
 				headerFilter = false,
 				rowFont=true,
-				destroy=true,
 				dragAnd_DropRow=true,
 				goto_page={
 					on:true,
@@ -195,7 +195,7 @@ function destroyTable(tableSelector) {
         if (tbody) {
             tbody.innerHTML = ''; // Clear the table body
         }
-        table.innerHTML = ''; // Clear the entire table
+        // table.innerHTML = ''; // Clear the entire table
     } else {
         console.warn('Table not found.');
     }
