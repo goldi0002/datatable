@@ -70,6 +70,19 @@ button {
   float: right;
   margin-top: 10px;
 }
+#contextMenu li:hover{
+  background-color:yellow;
+}
+#contextMenu li:hover::after {
+  content: attr(data-tooltip);
+  background-color: #b442ec;
+  color: #fff;
+  font-size: 16px;
+  padding: 5px;
+  border-radius: 3px;
+  position: absolute;
+  z-index: 1;
+}
 .pagination {
   display: -ms-flexbox;
   display: block;

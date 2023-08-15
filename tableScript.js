@@ -11,7 +11,7 @@ GTable.attachTable = function(tableSelector, options = {}) {
 				pageSize = 10,
 				shortSpec = [],
 				columnsResizing = true,
-				columnFiltering = true,
+				columnFiltering = false,
 				rowSelection = true,
 				paginationOptions = true,
 				globalSearch = true,
@@ -33,6 +33,14 @@ GTable.attachTable = function(tableSelector, options = {}) {
 					enable: false,
 					text: 'Import Data',
 					textStyle: {}
+				},
+				HeaderTooltip={
+					on:true,
+                    htoolTipin:[],
+					htoolTipinText:{
+						on:true,
+						Text:[]
+					}
 				},
 				showingentry = true,
 				totalCount = false,
@@ -82,6 +90,10 @@ GTable.attachTable = function(tableSelector, options = {}) {
               on:true,
               text:'Copy Current(row) with headers',
               JSONFormat:true,
+			  tooltip:{
+				on:true,
+				text:'Copy Current Row Data with headers'
+			  }
             },
             printRow:{
               on:true,
@@ -170,6 +182,9 @@ GTable.attachTable = function(tableSelector, options = {}) {
     if(rowHighlight.enable|| dragAnd_DropRow){
       findRows_addClass(dragAnd_DropRow,tableSelector);
     }
+	if(HeaderTooltip.on){
+		addToolTipToHeaders(tableSelector,HeaderTooltip);
+	}
     if(context_menu.enable){
       contextMenu_workProgrss(context_menu.buttons.edit?context_menu.buttons.edit:'',
 	    context_menu.buttons.delete?context_menu.buttons.delete:'',
@@ -183,23 +198,103 @@ GTable.attachTable = function(tableSelector, options = {}) {
 		if (importCsv.enable) {
 			importCSVFile();
 		}
+		// var table_=document.querySelector(tableSelector)
+		// if(table_){
+		// 	var contains_tr=table.innerHTML.includes("<tr>");
+		// 	if(contains_tr){
+		// 		updateTableWithData(_data,tableSelector,columns);
+		// 	}
+		// }
 	} catch (error) {
 		console.log(error + " occurred");
 	}
 };
+function addToolTipToHeaders(tableSelector, tltP) {
+    var table = document.querySelector(tableSelector);
+    if (!table) {
+        console.warn("Table not found. Please attach a table.");
+        return;
+    }
+    try {
+        var toltipHeader = table.querySelectorAll("th");
+        toltipHeader.forEach(function (header, Hindex) {
+            if (tltP.htoolTipin && tltP.htoolTipin.includes(Hindex)) {
+                var tooltipIndex = tltP.htoolTipin.indexOf(Hindex);
+                var tooltipText = tltP.htoolTipinText.Text[tooltipIndex];
+                if (tltP.htoolTipinText.on && tooltipText) {
+                    header.addEventListener("mouseover", function () {
+                        header.title = tooltipText;
+                    });
+                    header.addEventListener("mouseout", function () {
+                        header.removeAttribute('title');
+                    });
+                }
+            } else if (!tltP.htoolTipin) {
+                if (tltP.htoolTipinText && tltP.htoolTipinText.on) {
+                    if (tltP.htoolTipinText.Text && tltP.htoolTipinText.Text[Hindex]) {
+                        var tooltipText = tltP.htoolTipinText.Text[Hindex];
+                        header.addEventListener("mouseover", function () {
+                            header.title = tooltipText;
+                        });
+                        header.addEventListener("mouseout", function () {
+                            header.removeAttribute('title');
+                        });
+						header.addEventListener("mouseover", function () {
+							header.style.backgroundColor = "lightgray";
+						});
+						header.addEventListener("mouseout", function () {
+							header.style.backgroundColor = ""; // Reset to default
+						});
+                    } else {
+                        header.addEventListener("mouseover", function () {
+							header.style.backgroundColor = "lightgray";
+							if(header.textContent.includes("▼") ){
+								header.title = header.textContent.replace("▼","");
+							}else if( header.textContent.includes("▲")){
+                                header.title=header.textContent.replace("▲","");
+							}else{
+								header.title = header.textContent;
+							}
+                        });
+                        header.addEventListener("mouseout", function () {
+                            header.removeAttribute('title');
+							header.style.backgroundColor = "";
+                        });
+                    }
+                } else {
+                    header.addEventListener("mouseover", function () {
+						header.style.backgroundColor = "lightgray";
+						if(header.textContent.includes("▼") ){
+							header.title = header.textContent.replace("▼","");
+						}else if( header.textContent.includes("▲")){
+							header.title=header.textContent.replace("▲","");
+						}else{
+							header.title = header.textContent;
+						}
+                    });
+                    header.addEventListener("mouseout", function () {
+                        header.removeAttribute('title');
+						header.style.backgroundColor = ""; // Reset to default
+                    });
+                }
+            }
+        });
+    } catch (error) {
+        console.error("An error occurred while adding tooltips:", error);
+    }
+}
 function destroyTable(tableSelector) {
     var table = document.querySelector(tableSelector);
     if (table) {
-        // Remove event listeners and other resources
         var tbody = table.querySelector('tbody');
         if (tbody) {
             tbody.innerHTML = ''; // Clear the table body
         }
-		var paginationa_Option=document.querySelector("pagingOptions");
+		var paginationa_Option=document.getElementById("pagingOptions");
 		if(paginationa_Option){
 			paginationa_Option.innerHTML='';
 		}
-		var psgination=document.querySelector("pagination");
+		var psgination=document.getElementById("PaginationContainer");
 		if(psgination){
 			psgination.innerHTML='';
 		}
@@ -330,10 +425,9 @@ function contextMenu_workProgrss(edit,_del,_cpR,_cpWh,Pn_row,exportJson,selected
   closeButton.innerHTML = '&#10006;'; // Close symbol (X)
   contextMenu.appendChild(closeButton);
   if(edit.on && edit.text!=''){
-   if(edit.tooltip.on && edit.tooltip.text!=''){
+   if(edit.tooltip && edit.tooltip.on && edit.tooltip.text!=''){
 	editItem = document.createElement('li');
     editItem.id = 'edit_bTableBtn';
-    editItem.classList.add('tooltip'); // Add tooltip class
     editItem.setAttribute('data-tooltip', edit.text); // Set tooltip text
     editItem.textContent = edit.text + '✂️';
     contextMenu.appendChild(editItem);
@@ -346,7 +440,7 @@ function contextMenu_workProgrss(edit,_del,_cpR,_cpWh,Pn_row,exportJson,selected
     contextMenu.appendChild(document.createElement('hr'));
    }
   }
-  if(_del.on && _del.text!='' &&_del.on!=undefined &&_del.text!=undefined){
+  if(_del.on && _del.text!='' &&_del){
     deleteItem = document.createElement('li');
     deleteItem.id = 'delete_bTableBtn';
     deleteItem.textContent = _del.text;
@@ -354,19 +448,13 @@ function contextMenu_workProgrss(edit,_del,_cpR,_cpWh,Pn_row,exportJson,selected
   }
   if(_cpR.on && _cpR.text!=''){
     try{
-		if(_cpR.tooltip.on && _cpR.tooltip.text!=''&&_cpR.tooltip.text!=undefined){
+		if(_cpR.tooltip.on && _cpR.tooltip.text!=''&&_cpR.tooltip){
 			try{
-				var editContainer = document.createElement('div');
-				editContainer.className = 'tooltip';
 				copyRowItem=document.createElement('li');
 			    copyRowItem.id='cropRow_';
 			    copyRowItem.textContent=_cpR.text +'✂️';
-				editContainer.appendChild(copyRowItem);
-				var editTooltip = document.createElement('span');
-                editTooltip.className = 'tooltiptext';
-                editTooltip.textContent = edit.tooltip.text;
-                editContainer.appendChild(editTooltip);
-	            contextMenu.appendChild(editContainer);
+				copyRowItem.setAttribute('data-tooltip', _cpR.tooltip.text); 
+	            contextMenu.appendChild(copyRowItem);
 			}catch(error){
                console.warn(error +'tooltip is not initlize');
 			}
@@ -382,10 +470,21 @@ function contextMenu_workProgrss(edit,_del,_cpR,_cpWh,Pn_row,exportJson,selected
   }
   if(_cpWh.on && _cpWh.text!=''){
     try{
-      copyRowItemWithHeader=document.createElement('li');
-      copyRowItemWithHeader.id='cropRow_Header';
-      copyRowItemWithHeader.textContent=_cpWh.text +'✂️';
-      contextMenu.appendChild(copyRowItemWithHeader);
+		if(_cpWh.tooltip.on && _cpWh.tooltip.text!='' && _cpWh.tooltip){
+              try{
+                  copyRowItemWithHeader=document.createElement('li')
+				  copyRowItemWithHeader.id='cropRow_Header';
+				  copyRowItemWithHeader.setAttribute('data-tooltip', _cpWh.tooltip.text); 
+				  contextMenu.appendChild(copyRowItemWithHeader);
+			  }catch(error){
+				console.warn(error + "it will work fine if not wirking then you can enable tool tip by chaging context options")
+			  }
+		}else{
+			copyRowItemWithHeader=document.createElement('li');
+			copyRowItemWithHeader.id='cropRow_Header';
+			copyRowItemWithHeader.textContent=_cpWh.text +'✂️';
+			contextMenu.appendChild(copyRowItemWithHeader);
+		}
     }catch(error){
       console.warn(error + "not Create copy with header")
     }
@@ -898,6 +997,7 @@ function addPaginationContainer(tableSelector) {
 	var table = document.querySelector(tableSelector);
 	var paginationContainer = document.createElement('div');
 	paginationContainer.classList.add('pagination');
+	paginationContainer.setAttribute('id','PaginationContainer')
 	table.insertAdjacentElement('afterend', paginationContainer);
 }
 function updateLocalization(selectedLanguage) {
@@ -979,61 +1079,66 @@ function addSortableColumns(table, shortSpec, columns, sortDirection, currentPag
 	});
 }
 function updateTable(tableSelector, _data, _columns, currentPage, pageSize, groupByColumns) {
-  var table = document.querySelector(tableSelector);
-  var tbody = table.querySelector('tbody');
-  tbody.innerHTML = '';
-  var startIndex = (currentPage - 1) * pageSize;
-  var endIndex = startIndex + pageSize;
-  var dataToShow = _data.slice(startIndex, endIndex);
-
-  function groupData(data, groupColumns) {
-    if (groupColumns.length === 0) {
-      return [{ key: [], values: data }];
-    }
-    var groupedData = [];
-    var groupMap = new Map();
-    data.forEach(function(item) {
-      var groupKey = groupColumns.map(column => item[column]).join('|');
-      if (!groupMap.has(groupKey)) {
-        groupMap.set(groupKey, []);
-      }
-      groupMap.get(groupKey).push(item);
-    });
-    groupMap.forEach(function(groupItems, groupKey) {
-      groupedData.push({ key: groupKey.split('|'), values: groupItems });
-    });
-    return groupedData;
+	var table = document.querySelector(tableSelector);
+	var tbody = table.querySelector('tbody');
+	tbody.innerHTML = '';
+	var startIndex = (currentPage - 1) * pageSize;
+	var endIndex = startIndex + pageSize;
+	var dataToShow = _data.slice(startIndex, endIndex);
+  
+	function groupData(data, groupColumns) {
+	  if (groupColumns.length === 0) {
+		return [{ key: [], values: data }];
+	  }
+	  var groupedData = [];
+	  var groupMap = new Map();
+	  data.forEach(function(item) {
+		var groupKey = groupColumns.map(column => item[column]).join('|');
+		if (!groupMap.has(groupKey)) {
+		  groupMap.set(groupKey, []);
+		}
+		groupMap.get(groupKey).push(item);
+	  });
+	  groupMap.forEach(function(groupItems, groupKey) {
+		groupedData.push({ key: groupKey.split('|'), values: groupItems });
+	  });
+	  return groupedData;
+	}
+	var groupedData = groupData(dataToShow, groupByColumns || []);
+	function renderGroupRow(groupKeys) {
+	  var groupRow = document.createElement('tr');
+	  var groupCell = document.createElement('td');
+	  groupCell.setAttribute('colspan', _columns.length);
+	  groupCell.textContent = groupKeys.join(' - '); // Display group keys
+	  groupRow.appendChild(groupCell);
+	  tbody.appendChild(groupRow);
+	}
+	groupedData.forEach(function(group) {
+		if(group.key.length>0){
+			renderGroupRow(group.key);
+		}
+	  group.values.forEach(function(item) {
+		var newRow = document.createElement('tr');
+		_columns.forEach(function(column) {
+		  var newCell = document.createElement('td');
+		  if (column.field === 'delete') {
+			newCell.innerHTML = column.render(item);
+		  } else if (typeof column.render === 'function') {
+			newCell.innerHTML = column.render(item[column.field]); // Pass the whole item object
+		  } else {
+			newCell.textContent = item[column.field];
+			if (column.tooltip) {
+			  newCell.title = item[column.tooltip];
+			}
+		  }
+		  newRow.appendChild(newCell);
+		});
+		tbody.appendChild(newRow);
+	  });
+	});
+	findRows_addClass('',tableSelector);
   }
-  var groupedData = groupData(dataToShow, groupByColumns || []);
-function renderGroupRow(groupKeys) {
-	if(groupKeys.length>0){
-		var groupRow = document.createElement('tr');
-		var groupCell = document.createElement('td');
-		groupCell.setAttribute('colspan', _columns.length);
-		groupCell.textContent = groupKeys.join(' - '); // Display group keys
-		groupRow.appendChild(groupCell);
-		tbody.appendChild(groupRow);
-	} 
-}
-  groupedData.forEach(function(group) {
-    renderGroupRow(group.key);
-    group.values.forEach(function(item, rowIndex) {
-      var newRow = document.createElement('tr');
-      _columns.forEach(function(column) {
-        var newCell = document.createElement('td');
-        if (column.field === 'delete') {
-          newCell.innerHTML = column.render(rowIndex);
-        } else if (typeof column.render === 'function') {
-          newCell.innerHTML = column.render(item[column.field]);
-        } else {
-          newCell.textContent = item[column.field];
-        }
-        newRow.appendChild(newCell);
-      });
-      tbody.appendChild(newRow);
-    });
-  });
-}
+  
 function updatePaginationControls(tableSelector, currentPage, totalPages, _data, pageSize, columns, showingentry,groupByColumn,selectedLanguage) {
 	try {
 		var paginationContainer = document.querySelector(tableSelector + ' + .pagination');
@@ -1080,15 +1185,17 @@ function updatePaginationControls(tableSelector, currentPage, totalPages, _data,
                               .replace('{}', startEntry)
                               .replace('{}', endEntry)
                         }else {
-                              getShowingEnteryTextFromAnotherPlaceWhenLanguageChange = translate(selectedLanguage, 'translationShowEntries');
+							
+                              getShowingEnteryTextFromAnotherPlaceWhenLanguageChange = translate(selectedLanguage?selectedLanguage:'en', 'translationShowEntries');
                               showingEntryText.textContent = getShowingEnteryTextFromAnotherPlaceWhenLanguageChange.replace('{}', startEntry)
                               .replace('{}', endEntry)
                               .replace('{}', _data.length);
                         }
 						} catch (error) {
-							console.warn(error + "but it will work fine!")
+							console.warn(error + "didn't find any language")
 						}
 					} else {
+						
 						var startEntry = (currentPage - 1) * pageSize + 1;
 						var endEntry = Math.min(currentPage * pageSize, _data.length);
 						showingEntryText.textContent = `Showing ${startEntry}-${endEntry} of ${_data.length} entries`;
@@ -1381,25 +1488,25 @@ function throttle(func, limit) {
 		}
 	};
 }
-function updateTableWithData(data, tableSelector) {
-	try {
-		var table = document.querySelector(tableSelector);
-		var tbody = table.querySelector('tbody');
-		tbody.innerHTML = '';
-		data.forEach(function(row) {
-			var newRow = document.createElement('tr');
-			row.forEach(function(cell) {
-				var newCell = document.createElement('td');
-				newCell.textContent = cell;
-				newRow.appendChild(newCell);
-			});
-			tbody.appendChild(newRow);
-		});
-	} catch (error) {
-		console.log(error)
-	}
-
+function updateTableWithData(data, tableSelector, columns) {
+    try {
+				var table = document.querySelector(tableSelector);
+				var tbody = table.querySelector('tbody');
+				tbody.innerHTML = '';
+				data.forEach(function(row) {
+					var newRow = document.createElement('tr');
+					row.forEach(function(cell) {
+						var newCell = document.createElement('td');
+						newCell.textContent = cell;
+						newRow.appendChild(newCell);
+					});
+					tbody.appendChild(newRow);
+				});
+    } catch (error) {
+        console.log(error);
+    }
 }
+
 function parseCSV(csv) {
 	var lines = csv.split('\n');
 	var data = [];
