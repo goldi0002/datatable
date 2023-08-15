@@ -92,9 +92,11 @@ const randomString = generateRandomString(maxLength);
             }
             return data;
    }
-   var totalRecords = 100000; // Number of records you want to generate
+   var totalRecords = 10000; // Number of records you want to generate
     var randomData =generateRandomData(totalRecords) ;
-    GTable.attachTable('#myTable', {
+    tablebind();
+    function tablebind(){
+        GTable.attachTable('#myTable', {
             _data: randomData,
             sorting: true,
             columns: [
@@ -150,6 +152,14 @@ const randomString = generateRandomString(maxLength);
                        },
                        enabled:true,
                     },
+                    HeaderTooltip:{
+					on:true,
+                    htoolTipin: [0,1,4,3], // Add more indices here if needed
+                    htoolTipinText: {
+                        on: true,
+                        Text: ["Name With Tooltip 1", "Name With Tooltip 2", "Name With Tooltip 12","djgdjagdadasdjajdshgd"] // Add corresponding tooltip text
+                    }
+				 },
                     OnKeyBoardShortCuts:{
 				           enable:false,
 				           enterPress:{
@@ -173,7 +183,7 @@ const randomString = generateRandomString(maxLength);
                     languageNoDataAvailabemsg:{
                         enable:true,
                         container_id:"languageSelectorContainer",
-                        lang_code:'fr',
+                        lang_code:'en',
                         soingEntr:true,
                     },
                     rowHighlight:{
@@ -190,14 +200,18 @@ const randomString = generateRandomString(maxLength);
                             edit:{
                                 on:true,
                                 text:'Edit',
-                                tooltip:{
-                                    on:true,
-                                    text:'Edit Current Row'
-                                }
+                                // tooltip:{
+                                //     on:true,
+                                //     // text:'Edit Current Row'
+                                // }
                             },
                             CopyWithHeader:{
                                 on:true,
-                                text:'Copy Current(row) with headers'
+                                text:'Copy Current(row) with headers',
+                                tooltip:{
+                                    on:true,
+                                    text:'Copy Current(row) with headers dadasd'
+                                }
                             },
                             copyRow:{
                                 on:true,
@@ -218,6 +232,8 @@ const randomString = generateRandomString(maxLength);
                         }
                     }
         });
+    }
+    //  setInterval(tablebind(),5000)
     // })
     // .catch(error => {
     //     console.error('Error fetching data:', error);
